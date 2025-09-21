@@ -1,93 +1,85 @@
 const fs = require("fs");
 const path = require("path");
+
 const dataPath = path.join(__dirname, "../data/users.json");
-// :repeat: Utility functions
-function readUsersFromFile() {
-  const data = fs.readFileSync(dataPath);
+
+// Helper function → file படிக்க
+function readData() {
+  const data = fs.readFileSync(dataPath, "utf-8");
   return JSON.parse(data);
 }
-function writeUsersToFile(users) {
-  fs.writeFileSync(dataPath, JSON.stringify(users, null, 2));
+
+// Helper function → file எழுத
+function writeData(data) {
+  fs.writeFileSync(dataPath, JSON.stringify(data, null, 2));
 }
-function generateNewId(users) {
-  const ids = users.map((user) => user.id);
-  return ids.length > 0 ? Math.max(...ids) + 1 : 1;
-}
-// :inbox_tray: GET All Users
-exports.getUsers = (req, res) => {
-  try {
-    const users = readUsersFromFile();
-    res.json(users);
-  } catch (err) {
-    res.status(500).json({ message: "Error reading users." });
-  }
+
+// GET all users
+exports.getAllUsers = (req, res) => {
+  const users = readData();
+  res.json(users);
 };
-// :inbox_tray: GET User by ID
-exports.getUser = (req, res) => {
-  try {
-    const users = readUsersFromFile();
-    const user = users.find((u) => u.id === parseInt(req.params.id));
-    if (!user) return res.status(404).json({ message: "User not found" });
-    res.json(user);
-  } catch (err) {
-    res.status(500).json({ message: "Error retrieving user." });
-  }
+
+// GET single user
+exports.getUserById = (req, res) => {
+  const users = readData();
+  const user = users.find(u => u.id === parseInt(req.params.id));
+  if (!user) return res.status(404).json({ message: "User not found" });
+  res.json(user);
 };
-// :heavy_plus_sign: POST Create User
+
+// POST create user
 exports.createUser = (req, res) => {
-  try {
-    const { name, email } = req.body;
-    if (!name || !email)
-      return res.status(400).json({ message: "Name and email required" });
-    const users = readUsersFromFile();
-    // Check for duplicate email
-    const existing = users.find((u) => u.email === email);
-    if (existing)
-      return res.status(400).json({ message: "Email already exists" });
-    const newUser = {
-      id: generateNewId(users),
-      name,
-      email,
-    };
-    users.push(newUser);
-    writeUsersToFile(users);
-    res.status(201).json({ message: "User created", user: newUser });
-  } catch (err) {
-    res.status(500).json({ message: "Error creating user" });
+  const users = readData();
+  const { name, email } = req.body;
+
+  // Duplicate email check
+  if (users.find(u => u.email === email)) {
+    return res.status(400).json({ message: "Email already exists" });
   }
+
+  const newUser = {
+    id: users.length ? users[users.length - 1].id + 1 : 1,
+    name,
+    email
+  };
+
+  users.push(newUser);
+  writeData(users);
+
+  res.status(201).json({ message: "User created", user: newUser });
 };
-// :pencil2: PUT Update User
+
+// PUT update user
 exports.updateUser = (req, res) => {
-  try {
-    const { name, email } = req.body;
-    const userId = parseInt(req.params.id);
-    const users = readUsersFromFile();
-    const index = users.findIndex((u) => u.id === userId);
-    if (index === -1)
-      return res.status(404).json({ message: "User not found" });
-    // Check for duplicate email (excluding self)
-    const duplicate = users.find((u) => u.email === email && u.id !== userId);
-    if (duplicate)
-      return res.status(400).json({ message: "Email already in use" });
-    users[index] = { id: userId, name, email };
-    writeUsersToFile(users);
-    res.json({ message: "User updated", user: users[index] });
-  } catch (err) {
-    res.status(500).json({ message: "Error updating user" });
+  const users = readData();
+  const { id } = req.params;
+  const { name, email } = req.body;
+
+  const userIndex = users.findIndex(u => u.id === parseInt(id));
+  if (userIndex === -1) return res.status(404).json({ message: "User not found" });
+
+  // Duplicate email check (other than self)
+  if (users.find(u => u.email === email && u.id !== parseInt(id))) {
+    return res.status(400).json({ message: "Email already exists" });
   }
+
+  users[userIndex] = { ...users[userIndex], name, email };
+  writeData(users);
+
+  res.json({ message: "User updated", user: users[userIndex] });
 };
-// :x: DELETE User
+
+// DELETE user
 exports.deleteUser = (req, res) => {
-  try {
-    const userId = parseInt(req.params.id);
-    const users = readUsersFromFile();
-    const index = users.findIndex((u) => u.id === userId);
-    if (index === -1)
-      return res.status(404).json({ message: "User not found" });
-    const deleted = users.splice(index, 1);
-    writeUsersToFile(users);
-    res.json({ message: "User deleted", user: deleted[0] });
-  } catch (err) {
-    res.status(500).json({ message: "Error deleting user" });
-  }
+  let users = readData();
+  const { id } = req.params;
+
+  const userIndex = users.findIndex(u => u.id === parseInt(id));
+  if (userIndex === -1) return res.status(404).json({ message: "User not found" });
+
+  const deletedUser = users.splice(userIndex, 1);
+  writeData(users);
+
+  res.json({ message: "User deleted", user: deletedUser });
 };

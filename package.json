@@ -4,20 +4,13 @@
   "description": "",
   "main": "app.js",
   "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
     "dev": "nodemon app.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Thasmi-03/file-based-user-api.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Thasmi-03/file-based-user-api/issues"
-  },
-  "homepage": "https://github.com/Thasmi-03/file-based-user-api#readme",
   "dependencies": {
     "body-parser": "^2.2.0",
     "express": "^5.1.0",

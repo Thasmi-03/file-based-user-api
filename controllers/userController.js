@@ -3,13 +3,11 @@ import path from "path";
 
 const dataPath = path.resolve("data/users.json");
 
-// Helper to read JSON
 const readUsers = () => {
   const jsonData = fs.readFileSync(dataPath);
   return JSON.parse(jsonData);
 };
 
-// Helper to write JSON
 const writeUsers = (data) => {
   fs.writeFileSync(dataPath, JSON.stringify(data, null, 2));
 };
@@ -28,7 +26,7 @@ export const getUserById = (req, res) => {
   res.json(user);
 };
 
-// POST create user
+// POST (create )
 export const createUser = (req, res) => {
   const users = readUsers();
   const { name, email } = req.body;
@@ -48,7 +46,7 @@ export const createUser = (req, res) => {
   res.status(201).json({ message: "User created", user: newUser });
 };
 
-// PUT update user
+// PUT (update )
 export const updateUser = (req, res) => {
   const users = readUsers();
   const { id } = req.params;
@@ -58,7 +56,7 @@ export const updateUser = (req, res) => {
   if (userIndex === -1)
     return res.status(404).json({ message: "User not found" });
 
-  // Check email duplicate
+  // Check email validation
   if (email && users.some((u) => u.email === email && u.id !== parseInt(id))) {
     return res.status(400).json({ message: "Email already exists" });
   }
@@ -68,7 +66,7 @@ export const updateUser = (req, res) => {
   res.json({ message: "User updated", user: users[userIndex] });
 };
 
-// DELETE user
+// DELETE
 export const deleteUser = (req, res) => {
   let users = readUsers();
   const { id } = req.params;

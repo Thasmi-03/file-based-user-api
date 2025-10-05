@@ -1,10 +1,17 @@
-import express from 'express';
-import bodyParser from 'body-parser';
-import userRoutes from './routes/userRoutes.js';
+import express from "express";
+import {
+  getAllUsers,
+  getUserById,
+  createUser,
+  updateUser,
+  deleteUser,
+} from "../controllers/userController.js";
+const router = express.Router();
 
-const app = express();
-app.use(bodyParser.json());
-app.use('/api/users', user Routes);
+router.get("/", getAllUsers);
+router.get("/:id", getUserById);
+router.post("/", createUser);
+router.put("/:id", updateUser);
+router.delete("/:id", deleteUser);
 
-const PORT= 5000;
-app.listen(PORT, () => console.log('Server running on port $(PORT)'));
+export default router;

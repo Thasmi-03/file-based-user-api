@@ -46,7 +46,7 @@ export const createUser = (req, res) => {
   res.status(201).json({ message: "User created", user: newUser });
 };
 
-// PUT (update )
+// PUT (update data)
 export const updateUser = (req, res) => {
   const users = readUsers();
   const { id } = req.params;

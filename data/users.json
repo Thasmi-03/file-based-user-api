@@ -1,33 +1,33 @@
 [
   {
     "id": 1,
-    "name": "Meenadshi Updated",
-    "email": "meenadshi_new@gmail.com"
-  },
-  {
-    "id": 2,
     "name": "Thasmiga",
     "email": "thasmiga@example.com"
   },
   {
-    "id": 3,
+    "id": 2,
     "name": "Thasmigan",
     "email": "thasmigan@example.com"
   },
   {
-    "id": 4,
+    "id": 3,
     "name": "Vimalenderan",
     "email": "vimalendran@example.com"
   },
   {
-    "id": 5,
+    "id": 4,
     "name": "Kokulavanee",
     "email": "kokulavanee@example.com"
   },
   {
-    "id": 6,
+    "id": 5,
     "name": "zimba",
     "email": "zimba@example.com"
+  },
+  {
+    "id": 6,
+    "name": "parvathy",
+    "email": "parvathy@example.com"
   },
   {
     "id": 7,
